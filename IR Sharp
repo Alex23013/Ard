@@ -1,31 +1,67 @@
-void setup() {
-  // Comunicación seria a 9600 baudios
-  Serial.begin(9600);
-  pinMode(13, OUTPUT);
+class Infrared{
+  public:
+  Infrared(int IP);
+  Infrared(int IP, int NL);
+  float distancia();
+  void takeMeassure();
+  void setNumLectures(int NL);
+  
+  private:
+  int Input_pin;
+  int Num_lectures;
+};
+
+Infrared :: Infrared(int IP)
+{
+  Input_pin = IP;
+  Num_lectures = 20;
 }
 
+Infrared :: Infrared(int IP, int NL)
+{
+  Input_pin = IP;
+  Num_lectures = NL;
+}
 
-void loop() {
-  
+float Infrared :: distancia()
+{
+  long suma=0;
+  for(int i=0;i<Num_lectures;i++)
+  {
+    suma=suma+analogRead(Input_pin);
+  }  
+  float adc=suma/Num_lectures;
+  float distancia_cm = 17569.7 * pow(adc, -1.2062);
+  return(distancia_cm);
+} 
+
+void Infrared :: takeMeassure()
+{
   long tiempo=millis(); //tiempo antes de iniciar la lectura
-  int D_cm=distancia(20); //lectura de distancia
+  int D_cm= distancia(); //lectura de distancia
   tiempo=millis()-tiempo; //milisegundos que duró la lectura
   Serial.print("Tiempo de lectura: ");
   Serial.print(tiempo); 
   Serial.print("ms  Distancia: ");
   Serial.print(D_cm);
   Serial.println("  cm");
+}
+
+void Infrared :: setNumLectures(int NL)
+{
+  Num_lectures = NL;
+}
+
+Infrared infrared(A0); // (Input pin)
+
+void setup()
+{
+  Serial.begin(9600); // Comunicación serial a 9600 baudios
+}
+
+void loop()
+{ 
+  infrared.takeMeassure();
   delay(100);
 }
 
-float distancia(int n)
-{
-  long suma=0;
-  for(int i=0;i<n;i++)
-  {
-    suma=suma+analogRead(A0);
-  }  
-  float adc=suma/n;
-  float distancia_cm = 17569.7 * pow(adc, -1.2062);
-  return(distancia_cm);
-}
