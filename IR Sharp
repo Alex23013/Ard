@@ -1,12 +1,10 @@
 void setup() {
-  // Comunicación seria a 9600 baudios
-  Serial.begin(9600);
+  Serial.begin(9600);// Comunicación serial a 9600 baudios
   pinMode(13, OUTPUT);
 }
 
 
 void loop() {
-  
   long tiempo=millis(); //tiempo antes de iniciar la lectura
   int D_cm=distancia(20); //lectura de distancia
   tiempo=millis()-tiempo; //milisegundos que duró la lectura
